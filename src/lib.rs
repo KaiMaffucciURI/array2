@@ -1,12 +1,13 @@
 // I can't tell if most of this works, yet, there was a lot of heavy-lifting done by copilot
 // almost definitely needs error handling, and probably some other stuff
 
-enum ConstructWith<T> {
+pub enum ConstructWith<T> {
     Singleton(T),
     Collection(Vec<T>)
 }
 
-struct Array2<T> {
+// row_major may become obsolete
+pub struct Array2<T> {
     pub data: Vec<Option<T>>,
     pub width: usize,
     pub height: usize,
