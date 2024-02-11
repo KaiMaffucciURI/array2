@@ -11,7 +11,6 @@ pub struct Array2<T> {
     pub data: Vec<Option<T>>,
     pub width: usize,
     pub height: usize,
-    pub row_major: bool,
 }
 
 // the compiler lets this code run, but we may want to take a second look
@@ -50,7 +49,6 @@ impl<T: Clone> Array2<T> {
             data,
             width,
             height,
-            row_major
         }
     }
 
@@ -115,15 +113,16 @@ pub struct ColumnMajorIterator<'a, T> {
 impl<'a, T: Clone> Iterator for ColumnMajorIterator<'a, T> {
     type Item = T;
 
+    // copilot wrote this, but I modified it
     fn next(&mut self) -> Option<T> {
-        if self.current_col < self.array2.width {
+        if self.current_row < self.array2.height {
             let value = self.array2.data[self.current_row * self.array2.width + self.current_col].clone();
-            self.current_col += 1;
+            self.current_row += 1;
             value
         } else {
-            self.current_col = 0;
-            self.current_row += 1;
-            if self.current_row < self.array2.height {
+            self.current_row = 0;
+            self.current_col += 1;
+            if self.current_col < self.array2.width {
                 self.next()
             } else {
                 None
