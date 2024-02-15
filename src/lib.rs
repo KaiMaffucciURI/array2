@@ -93,9 +93,9 @@ impl<'a, T: Clone> Iterator for RowMajorIterator<'a, T> {
 
     fn next(&mut self) -> Option<T> {
         if self.current_index < self.array2.data.len() {
-            let value = self.array2.data[self.current_index].clone();
+            let value = self.array2.data[self.current_index].clone()?;
             self.current_index += 1;
-            value
+            Some(value)
         } else {
             None
         }
@@ -113,12 +113,11 @@ pub struct ColumnMajorIterator<'a, T> {
 impl<'a, T: Clone> Iterator for ColumnMajorIterator<'a, T> {
     type Item = T;
 
-    // copilot wrote this, but I modified it
     fn next(&mut self) -> Option<T> {
-        if self.current_row < self.array2.height {
-            let value = self.array2.data[self.current_row * self.array2.width + self.current_col].clone();
+        if self.current_row < self.array2.height && self.current_col < self.array2.width {
+            let value = self.array2.data[self.current_row * self.array2.width + self.current_col].clone()?;
             self.current_row += 1;
-            value
+            Some(value)
         } else {
             self.current_row = 0;
             self.current_col += 1;
