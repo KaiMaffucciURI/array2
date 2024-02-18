@@ -1,6 +1,7 @@
 // I can't tell if most of this works, yet, there was a lot of heavy-lifting done by copilot
 // almost definitely needs error handling, and probably some other stuff
 
+// tells the array2 constructor how to fill the array2 (with a single value or from a vec) 
 pub enum ConstructWith<T> {
     Singleton(T),
     Collection(Vec<T>)
@@ -19,22 +20,30 @@ impl<T: Clone> Array2<T> {
     // creates a new Array2 with the given width and height, and fills it with the given initial data (constructor)
     pub fn new(width: usize, height: usize, initial_data: ConstructWith<T>, row_major: bool) -> Array2<T> {
 
+        // stores the actual data in the array2
         let mut data = Vec::with_capacity(width * height);
         
+        // fills the array2 with the given initial data
         match initial_data {
+
+            // fills data with single value if ConstructWith::Singleton
             ConstructWith::Singleton(value) => {
                 for _ in 0..width * height {
                     data.push(Some(value.clone()));
                 }
             },
             
+            // fills data with values from a vec if ConstructWith::Collection
             ConstructWith::Collection(values) => {
+
+                // fills data with values from a vec in row major form
                 if row_major {
                     for value in values {
                         data.push(Some(value));
                     }
+
+                // fills data with values from a vec in column major form
                 } else {
-                    // TODO: does this work? i have no idea, it's untested
                     for row in 0..height {
                         for column in 0..width {
                             let index: usize = row * width + column;
@@ -45,6 +54,7 @@ impl<T: Clone> Array2<T> {
             }
         }
 
+        // returns the new Array2
         Array2 {
             data,
             width,
@@ -114,10 +124,14 @@ impl<'a, T: Clone> Iterator for ColumnMajorIterator<'a, T> {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
+        
+        // if we haven't reached the end of the column, return the next value
         if self.current_row < self.array2.height && self.current_col < self.array2.width {
             let value = self.array2.data[self.current_row * self.array2.width + self.current_col].clone()?;
             self.current_row += 1;
             Some(value)
+        
+        // if we have reached the end of the column, reset the row and increment the column
         } else {
             self.current_row = 0;
             self.current_col += 1;
@@ -133,8 +147,14 @@ impl<'a, T: Clone> Iterator for ColumnMajorIterator<'a, T> {
 
 #[cfg(test)]
 mod tests {
-    // idk what this is
-    //use super::*;
+    // didn't get the chance to write real tests, but if we did, these are the ones they'd be
 
+    // check if array2 is right size
+
+    // check if array2 is filled with the right values
+
+    // check if row major iterator returns the right values for a valid/invalid sudoku
+
+    // check if column major iterator returns the right values for a valid/invalid sudoku
 
 }
