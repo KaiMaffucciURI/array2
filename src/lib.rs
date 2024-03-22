@@ -8,6 +8,7 @@ pub enum ConstructWith<T> {
 }
 
 // row_major may become obsolete
+#[derive(Debug)]
 pub struct Array2<T> {
     pub data: Vec<Option<T>>,
     pub width: usize,
@@ -65,6 +66,9 @@ impl<T: Clone> Array2<T> {
     // gets the value at the given column and row
     pub fn get(&self, column: usize, row: usize) -> Option<T> {
         let index: usize = row * self.width + column;
+        if index >= self.data.len() {
+            return None;
+        }   
         self.data[index].clone()
     }
 
